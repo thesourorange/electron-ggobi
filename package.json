@@ -1,0 +1,39 @@
+{
+  "name": "electron-ggobi",
+  "version": "1.0.0",
+  "description": "Electron High Dimensional Plot",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": "https://github.com/electron/electron-ggobi",
+  "keywords": [
+    "Electron",
+    "d3"
+  ],
+  "author": "thesourorange",
+  "license": "CC0-1.0",
+  "devDependencies": {
+    "d3": "^3.5.6",
+    "jquery": "^2.1.4",
+    "electron": "~1.7.5",
+    "bluebird": "^3.5.0",    
+    "request": "^2.81.0",
+    "file-url": "~2.0.2",
+    "form-data": "~2.3.1",
+    "path": "~0.12.7",
+    "electron-pug": "1.5.1"
+  },
+  "dependencies": {
+    "async": "^1.4.2",
+    "d3": "^3.5.6",
+    "jquery": "^2.1.4",
+    "electron": "~1.7.5",
+    "bluebird": "^3.5.0",    
+    "request": "^2.81.0",
+    "file-url": "~2.0.2",
+    "form-data": "~2.3.1",
+    "path": "~0.12.7",
+    "electron-pug": "1.5.1"
+   }
+}
