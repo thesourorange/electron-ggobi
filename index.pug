@@ -10,12 +10,14 @@ block content
       p Multidimensional Graph Display
    
     div(style="position: absolute; top:42px; right:130px; border: solid; color: grey; padding:10px;")
-      a#load(href="/show" style="color: grey; font-size: 18px; font-weight: bold; text-decoration: none; ") Show
+      a#show(href="" style="color: grey; font-size: 18px; font-weight: bold; text-decoration: none; ") Show
 
     div(style="position: absolute; top:42px; right:50px; border: solid; color: white; padding:10px;")
-      a#load(href="/load" style="color: white; font-size: 18px; font-weight: bold; text-decoration: none; ") Load
+      a#load(href="" style="color: white; font-size: 18px; font-weight: bold; text-decoration: none; ") Load
 
     div#selector(style="position: absolute; top:130px; left:30px; width:240px; bottom:30px; background-color:black; border: solid; opacity:0.7; color: white; padding:10px;")  
     div#graphs(style="position: absolute; top:130px; left:320px; right:30px; bottom:30px; background-color:black; border: solid; opacity:0.7; color: white; padding:10px;")  
+
+    include assets/views/upload.pug
 
   script(src="assets/javascripts/responder.js")

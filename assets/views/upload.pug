@@ -1,0 +1,16 @@
+block content
+  div.model(id="uploadDialog" style="display:none")
+    div.modal-content
+      div.modal-header
+        span.close(id="uploadDialogClose") &times;
+        p Upload File
+      div.modal-body
+        div(style="width: 100%; display:inline-block;")
+          div#droparea
+            div#dropareainner
+              img(src='assets/icons/upload.svg' style='width:180px; height:180px; margin-top:40px;') 
+              p
+              p(style="color:white;") Drop file (csv) here
+            p(style="color:white;") or
+              input#uploadbtn(class='uploadbtn' type='button' value="Select")
+            input#upload(type='file')
