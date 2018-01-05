@@ -2,6 +2,9 @@ const ipcRenderer = require('./assets/index.js').ipcRenderer;
 const pug = require('pug');
 
 let $ = require('jquery');
+
+var schemaTemplate = pug.compileFile('assets/views/schema.pug');
+
 var lines = [];
 
 $('#load').on('click', function(e) {
