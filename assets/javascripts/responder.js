@@ -1,15 +1,23 @@
 const ipcRenderer = require('./assets/index.js').ipcRenderer;
 const pug = require('pug');
+const d3 = require('d3');
 
 let $ = require('jquery');
 
 var schemaTemplate = pug.compileFile('assets/views/schema.pug');
 
-var lines = [];
+var data = null;
 
 $('#load').on('click', function(e) {
     
     $('#uploadDialog').css('display', 'block');
+
+    return false;
+
+});
+
+
+$('#show').on('click', function(e) {
 
     return false;
 
@@ -71,71 +79,38 @@ $(document).ready(function() {
     function processFiles(files) {
       
       Array.prototype.slice.call(files).forEach(function(file) { 
-        getAsText(file);
-      });
+        var fileURL = URL.createObjectURL(file);
 
-    }
-
-    function getAsText(file) {
-      var reader = new FileReader();
-    
-      reader.readAsText(file);
-
-      // Handle errors load
-      reader.onload = loadHandler;
-      reader.onerror = errorHandler;
-    
-    }
-
-    function loadHandler(event) {
-      var csv = event.target.result;
-    
-      processData(csv);
-
-      $('#uploadDialog').css('display', 'none');    
-    
-    }
-
-    function processData(csv) {
-      var allTextLines = csv.split(/\r\n|\n/);
- 
-      for (var iLine = 0; iLine<allTextLines.length; iLine++) {
-        var data = allTextLines[iLine].split(',');
-        var row = [];
-
-        for (var iColumn = 0; iColumn< data.length; iColumn++) {
-          row.push(data[iColumn]);
-        }
+        d3.csv(fileURL, function(error, rows) {
+          var headers = d3.keys(rows[0]);
           
-        lines.push(row);
+          data = rows;
 
-      }
-
-      var html = schemaTemplate({
-          fields: lines[0]
-        });
-
-      $('#schema').html(html);
-
-      $("input[type=checkbox]").on("click", function() {
-         var checked = $( "input:checked" ).length;
- 
-         if (checked > 1) {
-          $('#showButton').css('color', 'white');
-          $('#show').css('color', 'white');
-        } else {
-          $('#showButton').css('color', 'grey');
-          $('#show').css('color', 'grey');
-        }
- 
-      });
+          var html = schemaTemplate({
+            fields: headers
+          });
   
-    }
+          $('#schema').html(html);
+  
+          $("input[type=checkbox]").on("click", function() {
+            var checked = $( "input:checked" ).length;
+    
+            if (checked > 1) {
+              $('#showButton').css('color', 'white');
+              $('#show').css('color', 'white');
+            } else {
+              $('#showButton').css('color', 'grey');
+              $('#show').css('color', 'grey');
+            }
+   
+          });
+       
+          $('#uploadDialog').css('display', 'none');    
+    
+        });
+   
+      });
 
-    function errorHandler(evt) {
-      if (evt.target.error.name == "NotReadableError") {
-        alert("Cannot read file !");
-      }
     }
     
 });
