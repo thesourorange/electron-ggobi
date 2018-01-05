@@ -24,7 +24,6 @@ $('#uploadDialogClose').on('click', function(e) {
 });
 
 $(document).ready(function() {
-  
     var dropzone = $('#droparea');
     
     dropzone.on('dragover', function() {
@@ -50,7 +49,7 @@ $(document).ready(function() {
       return false;
   
     });
-    
+
     var uploadBtn = $('#uploadbtn');
     var defaultUploadBtn = $('#upload');
    
@@ -112,8 +111,25 @@ $(document).ready(function() {
 
       }
 
-      
+      var html = schemaTemplate({
+          fields: lines[0]
+        });
 
+      $('#schema').html(html);
+
+      $("input[type=checkbox]").on("click", function() {
+         var checked = $( "input:checked" ).length;
+ 
+         if (checked > 1) {
+          $('#showButton').css('color', 'white');
+          $('#show').css('color', 'white');
+        } else {
+          $('#showButton').css('color', 'grey');
+          $('#show').css('color', 'grey');
+        }
+ 
+      });
+  
     }
 
     function errorHandler(evt) {

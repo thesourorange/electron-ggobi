@@ -1,6 +1,6 @@
 block content
   div
     each field in fields
-      input(type="radio" name="gender" value=`${field}`) 
-      label #{field}
-      br
+      input(type="checkbox" name="fields" value=`${field}` style="height:16px; width:16px;") 
+      label(style="vertical-align:top; margin-top:5px; margin-left:5px;") #{field}
+      br(style="height:5px;")
