@@ -8,6 +8,8 @@ var schemaTemplate = pug.compileFile('assets/views/schema.pug');
 
 var data = null;
 
+var selected = [];
+
 $('#load').on('click', function(e) {
     
     $('#uploadDialog').css('display', 'block');
@@ -17,9 +19,139 @@ $('#load').on('click', function(e) {
 });
 
 
-$('#show').on('click', function(e) {
+$('#draw').on('click', function(e) {
 
+  $("#area").html("");
+
+  var m = [30, 10, 30, 10],
+    w = $("#area").width() - m[1] - m[3],
+    h = $("#area").height() - 10 - m[0] - m[2];
+
+  var x = d3.scale.ordinal().rangePoints([0, w], 1),
+      y = {},
+      dragging = {};
+
+  var line = d3.svg.line(),
+      axis = d3.svg.axis().orient("left"),
+      background,
+      foreground;
+
+
+  var svg = d3.select("#area").append("svg")
+              .attr("width", w + m[1] + m[3])
+              .attr("height", h + m[0] + m[2])
+              .append("g")
+              .attr("transform", "translate(" + m[3] + "," + m[0] + ")");
+
+     x.domain(dimensions = d3.keys(data[0]).filter(function(d) {
+        return (selected.indexOf(d) > -1) && (y[d] = d3.scale.linear()
+          .domain(d3.extent(data, function(p) { return + p[d]; }))
+          .range([h, 0]));
+    }));
+  
+    // Add grey background lines for context.
+
+    background = svg.append("g")
+        .attr("class", "background")
+      .selectAll("path")
+        .data(data)
+      .enter().append("path")
+        .attr("d", path);
+  
+     var graph = svg.selectAll(".dimension")
+      .data(dimensions)
+      .enter().append("g")
+      .attr("class", "dimension")
+      .attr("transform", function(d) { return "translate(" + x(d) + ")"; })
+      .call(d3.behavior.drag()
+        .on("dragstart", function(d) {
+          dragging[d] = this.__origin__ = x(d);
+          background.attr("visibility", "hidden");
+        })
+        .on("drag", function(d) {
+          dragging[d] = Math.min(w, Math.max(0, this.__origin__ += d3.event.dx));
+          foreground.attr("d", path);
+          dimensions.sort(function(a, b) { return position(a) - position(b); });
+          x.domain(dimensions);
+          graph.attr("transform", function(d) { return "translate(" + position(d) + ")"; })
+        })
+        .on("dragend", function(d) {
+          delete this.__origin__;
+          delete dragging[d];
+          transition(d3.select(this)).attr("transform", "translate(" + x(d) + ")");
+          transition(foreground)
+              .attr("d", path);
+          background
+              .attr("d", path)
+              .transition()
+              .delay(500)
+              .duration(0)
+              .attr("visibility", null);
+        }));
+
+
+    graph.append("g")
+      .attr("class", "axis")
+      .each(function(d) { d3.select(this).call(axis.scale(y[d])); })
+    .append("text")
+      .attr("text-anchor", "middle")
+      .attr("y", -9)
+      .text(String);
+
+    // Add and store a brush for each axis.
+    graph.append("g")
+      .attr("class", "brush")
+      .each(function(d) { d3.select(this).call(y[d].brush = d3.svg.brush().y(y[d]).on("brushstart", brushstart).on("brush", brush)); })
+    .selectAll("rect")
+      .attr("x", -8)
+      .attr("width", 16);
+   
     return false;
+    
+  /**
+   * Get the position
+   *
+   * @param {*} d 
+   */
+  function position(d) {
+    var v = dragging[d];
+    return v == null ? x(d) : v;
+  }
+
+  function transition(g) {
+    return g.transition().duration(500);
+  }
+
+  /**
+   * Returns the path for  given point
+   * 
+   * @param {*} d 
+   */
+  function path(d) {
+    return line(dimensions.map(function(p) { return [position(p), y[p](d[p])]; }));
+  }
+
+  /**
+   * When brushing, don’t trigger axis dragging.
+   */
+  function brushstart() {
+    d3.event.sourceEvent.stopPropagation();
+  }
+
+  /**
+   *  Handles a brush event, toggling the display of foreground lines.
+   *
+   */
+  function brush() {
+    var actives = dimensions.filter(function(p) { return !y[p].brush.empty(); }),
+        extents = actives.map(function(p) { return y[p].brush.extent(); });
+    foreground.style("display", function(d) {
+      return actives.every(function(p, i) {
+        return extents[i][0] <= d[p] && d[p] <= extents[i][1];
+      }) ? null : "none";
+    });
+
+  }
 
 });
 
@@ -45,12 +177,10 @@ $(document).ready(function() {
     });
     
     dropzone.on('drop', function(e) {
-      //prevent browser from open the file when drop ofd
       e.stopPropagation();
       e.preventDefault();
       dropzone.removeClass('hover');
       
-      //retrieve uploaded files data
       var files = e.originalEvent.dataTransfer.files;
       processFiles(files);
       
@@ -78,6 +208,8 @@ $(document).ready(function() {
    
     function processFiles(files) {
       
+      selected = []; 
+
       Array.prototype.slice.call(files).forEach(function(file) { 
         var fileURL = URL.createObjectURL(file);
 
@@ -93,15 +225,20 @@ $(document).ready(function() {
           $('#schema').html(html);
   
           $("input[type=checkbox]").on("click", function() {
+            selected = [];
             var checked = $( "input:checked" ).length;
-    
+           
             if (checked > 1) {
-              $('#showButton').css('color', 'white');
-              $('#show').css('color', 'white');
+              $('#drawButton').css('color', 'white');
+              $('#draw').css('color', 'white');
             } else {
               $('#showButton').css('color', 'grey');
-              $('#show').css('color', 'grey');
+              $('#draw').css('color', 'grey');
             }
+
+            $("#schema").find("input:checked").each(function (i, ob) { 
+               selected.push(ob.value);
+            });  
    
           });
        
