@@ -36,7 +36,6 @@ $('#draw').on('click', function(e) {
       background,
       foreground;
 
-
   var svg = d3.select("#area").append("svg")
               .attr("width", w + m[1] + m[3])
               .attr("height", h + m[0] + m[2])
@@ -57,8 +56,16 @@ $('#draw').on('click', function(e) {
         .data(data)
       .enter().append("path")
         .attr("d", path);
-  
-     var graph = svg.selectAll(".dimension")
+
+  // Add blue foreground lines for focus.
+    foreground = svg.append("g")
+        .attr("class", "foreground")
+      .selectAll("path")
+        .data(data)
+      .enter().append("path")
+        .attr("d", path);
+ 
+    var graph = svg.selectAll(".dimension")
       .data(dimensions)
       .enter().append("g")
       .attr("class", "dimension")
