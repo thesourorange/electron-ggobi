@@ -101,7 +101,8 @@ $('#draw').on('click', function(e) {
     // Add and store a brush for each axis.
     graph.append("g")
       .attr("class", "brush")
-      .each(function(d) { d3.select(this).call(y[d].brush = d3.svg.brush().y(y[d]).on("brushstart", brushstart).on("brush", brush)); })
+      .each(function(d) { 
+        d3.select(this).call(y[d].brush = d3.svg.brush().y(y[d]).on("brushstart", brushstart).on("brush", brush)); })
     .selectAll("rect")
       .attr("x", -8)
       .attr("width", 16);
@@ -143,8 +144,11 @@ $('#draw').on('click', function(e) {
    *
    */
   function brush() {
-    var actives = dimensions.filter(function(p) { return !y[p].brush.empty(); }),
-        extents = actives.map(function(p) { return y[p].brush.extent(); });
+    var actives = dimensions.filter(function(p) { 
+        return !y[p].brush.empty(); 
+      }),
+    extents = actives.map(function(p) { return y[p].brush.extent(); });
+    
     foreground.style("display", function(d) {
       return actives.every(function(p, i) {
         return extents[i][0] <= d[p] && d[p] <= extents[i][1];
