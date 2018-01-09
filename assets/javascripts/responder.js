@@ -10,6 +10,8 @@ var data = null;
 
 var selected = [];
 
+var filters = new Map();
+
 $('#load').on('click', function(e) {
     
     $('#uploadDialog').css('display', 'block');
@@ -141,6 +143,7 @@ $('#draw').on('click', function(e) {
 
   /**
    * When brushing, don’t trigger axis dragging.
+   * 
    */
   function brushstart() {
     d3.event.sourceEvent.stopPropagation();
@@ -217,22 +220,54 @@ $(document).ready(function() {
   
     });
    
-    function processFiles(files) {
-      
-      selected = []; 
+    function processFiles(files) { 
+      var categorical = [];
+      var continuous = [];
 
       Array.prototype.slice.call(files).forEach(function(file) { 
         var fileURL = URL.createObjectURL(file);
 
         d3.csv(fileURL, function(error, rows) {
-          var headers = d3.keys(rows[0]);
-          
-          data = rows;
+        var headers = d3.keys(rows[0]);
+        data = rows;
 
-          var html = schemaTemplate({
-            fields: headers
+        rows.forEach(function(row) {
+           
+            headers.forEach(function(column) {
+
+              if (!isNumber(row[column]) && row[column].match(/\S/)) {  
+                
+                  if (categorical.indexOf(column) == -1) {
+                    categorical.push(column);
+                    filters.set(column, []);
+                  }
+
+                  if (filters.get(column).indexOf(row[column]) == -1) {
+                    filters.get(column).push(row[column]);
+                  }
+
+              }
+
+            });
+                      
+            function isNumber(n) {
+              return !isNaN(parseFloat(n)) && isFinite(n);
+            }
+ 
           });
-  
+
+          headers.forEach(function(column) {
+            if (categorical.indexOf(column) == -1) {
+              continuous.push(column);
+            }
+          });
+        
+          var html = schemaTemplate({
+            categorical: categorical,
+            continuous: continuous,
+            filters: filters
+          });
+
           $('#schema').html(html);
   
           $("input[type=checkbox]").on("click", function() {
