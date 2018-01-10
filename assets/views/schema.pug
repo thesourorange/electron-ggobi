@@ -2,7 +2,7 @@ block content
   div
     each field in categorical
       input(type="checkbox" name="categorical" value=`${category}` style="height:14px; width:14px;" checked) 
-      div(style="display: inline-block; opacity:0.8; left:70px; width: 200px; font-size:16px; vertical-align:top; margin-bottom:10px;")
+      div(style="display: inline-block; opacity:0.8; left:70px; width: 90%; font-size:16px; vertical-align:top; margin-bottom:10px;")
         label #{field}
         span(style="width:16px; height:16px; float: right;")
           - var buttonID = field + '-button'
@@ -16,9 +16,10 @@ block content
                 label #{filter}
     br(style="height:2px;")
     hr
-    each field in continuous
-      input(type="checkbox" name="categorical" value=`${field}` style="height:14px; width:14px;") 
-      div(style="display: inline-block; left:70px; width:200px; font-size:16px; opacity:0.8; vertical-align:top; margin-bottom:10px;")
-         label #{field}
-      br(style="height:5px;")
+    div#continuous
+      each field in continuous
+        input(type="checkbox" id=`${field}` value=`${field}` style="height:14px; width:14px;") 
+        div(style="display: inline-block; left:70px; width:200px; font-size:16px; opacity:0.8; vertical-align:top; margin-bottom:10px;")
+          label #{field}
+        br(style="height:5px;")
 

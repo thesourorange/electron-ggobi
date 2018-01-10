@@ -284,20 +284,19 @@ $(document).ready(function() {
   
           $("input[type=checkbox]").on("click", function() {
             selected = [];
-            var checked = $( "input:checked" ).length;
-           
-            if (checked > 1) {
-              $('#drawButton').css('color', 'white');
-              $('#draw').css('color', 'white');
-            } else {
-              $('#showButton').css('color', 'grey');
-              $('#draw').css('color', 'grey');
-            }
 
-            $("#schema").find("input:checked").each(function (i, ob) { 
+            $("#continuous").find("input:checked").each(function (i, ob) { 
                selected.push(ob.value);
             });  
    
+            if (selected.length > 1) {
+              $('#drawButton').css('color', 'white');
+              $('#draw').css('color', 'white');
+            } else {
+              $('#drawButton').css('color', 'grey');
+              $('#draw').css('color', 'grey');
+            }
+
           });
        
           $('#uploadDialog').css('display', 'none');    
