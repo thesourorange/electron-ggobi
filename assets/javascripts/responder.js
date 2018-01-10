@@ -12,6 +12,18 @@ var selected = [];
 
 var filters = new Map();
 
+$.fn.Toggle = function(id, button) {
+
+  if ($(id).css("display") == 'none') {
+    $(id).css("display", "inline-block");
+    $(button).css("background", $(button).css("background").replace('up', 'down'));
+  } else {
+    $(id).css("display", "none"); 
+    $(button).css("background", $(button).css("background").replace('down', 'up'));
+  }
+
+}
+
 $('#load').on('click', function(e) {
     
     $('#uploadDialog').css('display', 'block');
