@@ -11,6 +11,7 @@ var data = null;
 var selected = [];
 
 var filters = new Map();
+var selectors = new Map();
 
 $.fn.Toggle = function(id, button) {
 
@@ -296,6 +297,12 @@ $(document).ready(function() {
               $('#drawButton').css('color', 'grey');
               $('#draw').css('color', 'grey');
             }
+
+            categorical.forEach(function(column) {
+              $("#" + column).find("input:checked").each(function (i, ob) { 
+              });  
+
+            });
 
           });
        
