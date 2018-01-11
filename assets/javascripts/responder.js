@@ -11,7 +11,7 @@ var data = null;
 var selected = [];
 
 var filters = new Map();
-var selectors = new Map();
+var category = null;
 
 $.fn.Toggle = function(id, button) {
 
@@ -37,6 +37,15 @@ $('#load').on('click', function(e) {
 $('#draw').on('click', function(e) {
 
   $("#area").html("");
+
+  var values = [];
+  if (category != null) { 
+    
+    $("#" + category).find('input[name=' + category + '-option]:checked').each(function (i, ob) { 
+        values.push(ob.value);
+    });
+
+  } 
 
   var m = [30, 10, 30, 10],
     w = $("#area").width() - m[1] - m[3],
@@ -182,6 +191,10 @@ $('#draw').on('click', function(e) {
 
 });
 
+/**
+ * Closing/Hiding the Upload Dialog
+ * 
+ */
 $('#uploadDialogClose').on('click', function(e) {
     
     $('#uploadDialog').css('display', 'none');
@@ -237,6 +250,8 @@ $(document).ready(function() {
       var categorical = [];
       var continuous = [];
 
+      category = null;
+
       Array.prototype.slice.call(files).forEach(function(file) { 
         var fileURL = URL.createObjectURL(file);
 
@@ -275,6 +290,8 @@ $(document).ready(function() {
             }
           });
         
+          category = categorical.length > 0 ? categorical[0] : null;
+
           var html = schemaTemplate({
             categorical: categorical,
             continuous: continuous,
@@ -298,12 +315,12 @@ $(document).ready(function() {
               $('#draw').css('color', 'grey');
             }
 
-            categorical.forEach(function(column) {
-              $("#" + column).find("input:checked").each(function (i, ob) { 
-              });  
+          });
 
-            });
-
+          $("input[type=radio]").on("click", function() {
+ 
+            category = $('input[name=categorical]:checked', "#categories").val();
+ 
           });
        
           $('#uploadDialog').css('display', 'none');    
