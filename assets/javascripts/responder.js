@@ -11,7 +11,6 @@ var data = null;
 var selected = [];
 
 var filters = new Map();
-var category = null;
 
 $.fn.Toggle = function(id, button) {
 
@@ -38,14 +37,36 @@ $('#draw').on('click', function(e) {
 
   $("#area").html("");
 
-  var values = [];
-  if (category != null) { 
+  var selectors = new Map();
+ 
+  $("#categories").find("input[name=categorical]:checked").each(function (i, ob) { 
+    var field = ob.value;
+
+    selectors.set(field, []);
     
-    $("#" + category).find('input[name=' + category + '-option]:checked').each(function (i, ob) { 
-        values.push(ob.value);
+    $("#" + ob.value).find("input[type=checkbox]:checked").each(function (i, ob) { 
+
+      selectors.get(field).push(ob.value);
+
     });
 
-  } 
+  });  
+ 
+  var filteredData = data.filter(function(d, i) {
+
+    var iKeys = selectors.keys();
+
+    for (let key of iKeys) {
+      
+      if (selectors.get(key).indexOf(d[key]) == -1) {
+        return;
+      }
+
+    }
+
+    return d;
+
+  });
 
   var m = [30, 10, 30, 10],
     w = $("#area").width() - m[1] - m[3],
@@ -66,9 +87,9 @@ $('#draw').on('click', function(e) {
               .append("g")
               .attr("transform", "translate(" + m[3] + "," + m[0] + ")");
 
-     x.domain(dimensions = d3.keys(data[0]).filter(function(d) {
+     x.domain(dimensions = d3.keys(filteredData[0]).filter(function(d) {
         return (selected.indexOf(d) > -1) && (y[d] = d3.scale.linear()
-          .domain(d3.extent(data, function(p) { return + p[d]; }))
+          .domain(d3.extent(filteredData, function(p) { return + p[d]; }))
           .range([h, 0]));
     }));
   
@@ -77,7 +98,7 @@ $('#draw').on('click', function(e) {
     background = svg.append("g")
         .attr("class", "background")
       .selectAll("path")
-        .data(data)
+        .data(filteredData)
       .enter().append("path")
         .attr("d", path);
 
@@ -85,7 +106,7 @@ $('#draw').on('click', function(e) {
     foreground = svg.append("g")
         .attr("class", "foreground")
       .selectAll("path")
-        .data(data)
+        .data(filteredData)
       .enter().append("path")
         .attr("d", path);
  
@@ -305,8 +326,11 @@ $(document).ready(function() {
 
             $("#continuous").find("input:checked").each(function (i, ob) { 
                selected.push(ob.value);
+            }); 
+
+            $("#categories").find("input[name=categorical]:checked").each(function (i, ob) { 
             });  
-   
+
             if (selected.length > 1) {
               $('#drawButton').css('color', 'white');
               $('#draw').css('color', 'white');
@@ -315,12 +339,6 @@ $(document).ready(function() {
               $('#draw').css('color', 'grey');
             }
 
-          });
-
-          $("input[type=radio]").on("click", function() {
- 
-            category = $('input[name=categorical]:checked', "#categories").val();
- 
           });
        
           $('#uploadDialog').css('display', 'none');    

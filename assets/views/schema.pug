@@ -2,7 +2,7 @@ block content
   div
     div#categories
       each field, index in categorical
-        input(type="checkbox" name="categorical" value=`${field}` style="height:14px; width:14px;") 
+        input(type="checkbox" name="categorical" value=`${field}` style="height:14px; width:14px;" checked) 
         div(style="display: inline-block; opacity:0.8; left:70px; width: 90%; font-size:16px; vertical-align:top; margin-bottom:10px;")
           label #{field}
           span(style="width:16px; height:16px; float: right;")
