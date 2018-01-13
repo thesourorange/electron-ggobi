@@ -121,7 +121,7 @@ $.fn.Draw = function() {
       .on("dragend", function(d) {
         delete this.__origin__;
         delete dragging[d];
-        
+
         transition(d3.select(this)).attr("transform", "translate(" + x(d) + ")");
         transition(foreground)
             .attr("d", path);
@@ -132,7 +132,6 @@ $.fn.Draw = function() {
             .duration(0)
             .attr("visibility", null);
       }));
-
 
   graph.append("g")
     .attr("class", "axis")
