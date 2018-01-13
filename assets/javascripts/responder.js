@@ -24,17 +24,8 @@ $.fn.Toggle = function(id, button) {
 
 }
 
-$('#load').on('click', function(e) {
-    
-    $('#uploadDialog').css('display', 'block');
-
-    return false;
-
-});
-
-
-$('#draw').on('click', function(e) {
-
+$.fn.Draw = function() {
+  
   $("#area").html("");
 
   var selectors = new Map();
@@ -93,74 +84,75 @@ $('#draw').on('click', function(e) {
           .range([h, 0]));
     }));
   
-    // Add grey background lines for context.
+  // Add grey background lines for context.
 
-    background = svg.append("g")
-        .attr("class", "background")
-      .selectAll("path")
-        .data(filteredData)
-      .enter().append("path")
-        .attr("d", path);
+  background = svg.append("g")
+      .attr("class", "background")
+    .selectAll("path")
+      .data(filteredData)
+    .enter().append("path")
+      .attr("d", path);
 
-  // Add blue foreground lines for focus.
-    foreground = svg.append("g")
-        .attr("class", "foreground")
-      .selectAll("path")
-        .data(filteredData)
-      .enter().append("path")
-        .attr("d", path);
- 
-    var graph = svg.selectAll(".dimension")
-      .data(dimensions)
-      .enter().append("g")
-      .attr("class", "dimension")
-      .attr("transform", function(d) { return "translate(" + x(d) + ")"; })
-      .call(d3.behavior.drag()
-        .on("dragstart", function(d) {
-          dragging[d] = this.__origin__ = x(d);
-          background.attr("visibility", "hidden");
-        })
-        .on("drag", function(d) {
-          dragging[d] = Math.min(w, Math.max(0, this.__origin__ += d3.event.dx));
-          foreground.attr("d", path);
-          dimensions.sort(function(a, b) { return position(a) - position(b); });
-          x.domain(dimensions);
-          graph.attr("transform", function(d) { return "translate(" + position(d) + ")"; })
-        })
-        .on("dragend", function(d) {
-          delete this.__origin__;
-          delete dragging[d];
-          transition(d3.select(this)).attr("transform", "translate(" + x(d) + ")");
-          transition(foreground)
-              .attr("d", path);
-          background
-              .attr("d", path)
-              .transition()
-              .delay(500)
-              .duration(0)
-              .attr("visibility", null);
-        }));
+// Add blue foreground lines for focus.
+  foreground = svg.append("g")
+      .attr("class", "foreground")
+    .selectAll("path")
+      .data(filteredData)
+    .enter().append("path")
+      .attr("d", path);
+
+  var graph = svg.selectAll(".dimension")
+    .data(dimensions)
+    .enter().append("g")
+    .attr("class", "dimension")
+    .attr("transform", function(d) { return "translate(" + x(d) + ")"; })
+    .call(d3.behavior.drag()
+      .on("dragstart", function(d) {
+        dragging[d] = this.__origin__ = x(d);
+        background.attr("visibility", "hidden");
+      })
+      .on("drag", function(d) {
+        dragging[d] = Math.min(w, Math.max(0, this.__origin__ += d3.event.dx));
+        foreground.attr("d", path);
+        dimensions.sort(function(a, b) { return position(a) - position(b); });
+        x.domain(dimensions);
+        graph.attr("transform", function(d) { return "translate(" + position(d) + ")"; })
+      })
+      .on("dragend", function(d) {
+        delete this.__origin__;
+        delete dragging[d];
+        
+        transition(d3.select(this)).attr("transform", "translate(" + x(d) + ")");
+        transition(foreground)
+            .attr("d", path);
+        background
+            .attr("d", path)
+            .transition()
+            .delay(500)
+            .duration(0)
+            .attr("visibility", null);
+      }));
 
 
-    graph.append("g")
-      .attr("class", "axis")
-      .each(function(d) { d3.select(this).call(axis.scale(y[d])); })
-    .append("text")
-      .attr("text-anchor", "middle")
-      .attr("y", -9)
-      .text(String);
+  graph.append("g")
+    .attr("class", "axis")
+    .each(function(d) { d3.select(this).call(axis.scale(y[d])); })
+  .append("text")
+    .attr("text-anchor", "middle")
+    .attr("y", -9)
+    .text(String);
 
-    // Add and store a brush for each axis.
-    graph.append("g")
-      .attr("class", "brush")
-      .each(function(d) { 
-        d3.select(this).call(y[d].brush = d3.svg.brush().y(y[d]).on("brushstart", brushstart).on("brush", brush)); })
-    .selectAll("rect")
-      .attr("x", -8)
-      .attr("width", 16);
-   
-    return false;
-    
+  // Add and store a brush for each axis.
+  graph.append("g")
+    .attr("class", "brush")
+    .each(function(d) { 
+      d3.select(this).call(y[d].brush = d3.svg.brush().y(y[d]).on("brushstart", brushstart).on("brush", brush)); })
+  .selectAll("rect")
+    .attr("x", -8)
+    .attr("width", 16);
+  
+  return;
+
   /**
    * Get the position
    *
@@ -209,6 +201,28 @@ $('#draw').on('click', function(e) {
     });
 
   }
+
+}
+
+$(window).resize(function(){
+
+  $(this).Draw();
+
+});
+
+$('#load').on('click', function(e) {
+    
+  $('#uploadDialog').css('display', 'block');
+
+  return false;
+
+});
+
+$('#draw').on('click', function(e) {
+  
+  $(this).Draw();
+
+  return false;
 
 });
 
