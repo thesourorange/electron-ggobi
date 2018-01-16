@@ -11,7 +11,7 @@ block content
             - var click = '$(this).Toggle("#' + fieldID + '","#' + buttonID + '")'
             input(type="button" id=`${buttonID}` onclick=`${click}` style="width:16px; height:16px; border:none; background: url('assets/icons/up-chevron-button.svg'); background-size: cover;  background-repeat: no-repeat;") 
           div(id=`${fieldID}` style="display:none;")
-            each filter in filters.get(field)
+            each filter in filters.get(field).sort()
               div(style="display: inline-block; left:70px; width: 200px; vertical-align:top; margin-top:5px;")
                 - var filterID = field + '-option'
                 input(type="checkbox" name=`${filterID}` value=`${filter}` style="height:12px; width:12px;" checked) 
@@ -30,7 +30,7 @@ block content
             - var click = '$(this).Toggle("#' + fieldID + '","#' + buttonID + '")'
             input(type="button" id=`${buttonID}` onclick=`${click}` style="width:16px; height:16px; border:none; background: url('assets/icons/up-chevron-button.svg'); background-size: cover;  background-repeat: no-repeat;") 
           div(id=`${fieldID}` style="display:none;")
-            each selector in selectors.get(field)
+            each selector in selectors.get(field).sort()
               div(style="display: inline-block; left:70px; width: 200px; vertical-align:top; margin-top:5px;")
                 - var selectorID = field + '-option'
                 input(type="checkbox" name=`${selectorID}` value=`${selector}` style="height:12px; width:12px;" checked) 
