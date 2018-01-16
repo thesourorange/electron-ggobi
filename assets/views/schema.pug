@@ -24,10 +24,13 @@ block content
         div(style="display: inline-block; opacity:0.8; left:70px; width: 90%; font-size:16px; vertical-align:top; margin-bottom:10px;")
           label #{field}
           span(style="width:16px; height:16px; float: right;")
-            - var buttonID = field + '-button'
-            - var click = '$(this).Toggle("#' + field + '","#' + buttonID + '")'
+            - var fieldID = 'field-' + field.replace(/[\s]/, ' ')
+            - var buttonID = fieldID.replace(')','') + '-button'
+            - var click = '$(this).Toggle("#' + fieldID + '","#' + buttonID + '")'
+            p 
+            #{fieldID}
             input(type="button" id=`${buttonID}` onclick=`${click}` style="width:16px; height:16px; border:none; background: url('assets/icons/up-chevron-button.svg'); background-size: cover;  background-repeat: no-repeat;") 
-          div(id=`${field}` style="display:none;")
+          div(id=`${fieldID}` style="display:none;")
             each selector in selectors.get(field)
               div(style="display: inline-block; left:70px; width: 200px; vertical-align:top; margin-top:5px;")
                 - var selectorID = field + '-option'
