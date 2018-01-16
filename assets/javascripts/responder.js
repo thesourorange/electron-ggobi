@@ -11,6 +11,7 @@ var data = null;
 var selected = [];
 
 var filters = new Map();
+var selectors = new Map();
 
 $.fn.Toggle = function(id, button) {
 
@@ -60,8 +61,8 @@ $.fn.Draw = function() {
   });
 
   var m = [30, 10, 30, 10],
-    w = $("#area").width() - m[1] - m[3],
-    h = $("#area").height() - 10 - m[0] - m[2];
+    w = ($("#area").width() < 600 ? 600 : $("#area").width())- m[1] - m[3],
+    h = ($("#area").height() < 500 ? 500 : $("#area").height())  - 10 - m[0] - m[2];
 
   var x = d3.scale.ordinal().rangePoints([0, w], 1),
       y = {},
@@ -287,6 +288,8 @@ $(document).ready(function() {
 
       category = null;
 
+      filters.clear();
+
       Array.prototype.slice.call(files).forEach(function(file) { 
         var fileURL = URL.createObjectURL(file);
 
@@ -309,6 +312,16 @@ $(document).ready(function() {
                     filters.get(column).push(row[column]);
                   }
 
+              } else {
+                if (continuous.indexOf(column) == -1) {
+                  continuous.push(column);
+                  selectors.set(column, []);
+                }
+
+                if (selectors.get(column).indexOf(row[column]) == -1) {
+                  selectors.get(column).push(row[column]);
+                }
+
               }
 
             });
@@ -319,12 +332,6 @@ $(document).ready(function() {
  
           });
 
-          headers.forEach(function(column) {
-            if (categorical.indexOf(column) == -1) {
-              continuous.push(column);
-            }
-          });
-        
           category = categorical.length > 0 ? categorical[0] : null;
 
           var html = schemaTemplate({
