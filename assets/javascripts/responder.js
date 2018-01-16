@@ -14,7 +14,7 @@ var filters = new Map();
 var selectors = new Map();
 
 $.fn.Toggle = function(id, button) {
-
+   
   if ($(id).css("display") == 'none') {
     $(id).css("display", "inline-block");
     $(button).css("background", $(button).css("background").replace('up', 'down'));
@@ -288,6 +288,7 @@ $(document).ready(function() {
       category = null;
 
       filters.clear();
+      selectors.clear();
 
       Array.prototype.slice.call(files).forEach(function(file) { 
         var fileURL = URL.createObjectURL(file);
@@ -336,7 +337,8 @@ $(document).ready(function() {
           var html = schemaTemplate({
             categorical: categorical,
             continuous: continuous,
-            filters: filters
+            filters: filters,
+            selectors: selectors
           });
 
           $('#schema').html(html);
