@@ -7,7 +7,7 @@ block content
           label #{field}
           span(style="width:16px; height:16px; float: right;")
             - var fieldID = 'field-' + field.replace(/[\s|0-9|\(|\)]/g, '-')
-            - var buttonID = fieldID.replace(')','') + '-button'
+            - var buttonID = fieldID + '-button'
             - var click = '$(this).Toggle("#' + fieldID + '","#' + buttonID + '")'
             input(type="button" id=`${buttonID}` onclick=`${click}` style="width:16px; height:16px; border:none; background: url('assets/icons/up-chevron-button.svg'); background-size: cover;  background-repeat: no-repeat;") 
           div(id=`${fieldID}` style="display:none;")
@@ -26,7 +26,7 @@ block content
           label #{field}
           span(style="width:16px; height:16px; float: right;")
             - var fieldID = 'field-' + field.replace(/[\s|0-9|\(|\)]/g, '-')
-            - var buttonID = fieldID.replace(')','') + '-button'
+            - var buttonID = fieldID + '-button'
             - var click = '$(this).Toggle("#' + fieldID + '","#' + buttonID + '")'
             input(type="button" id=`${buttonID}` onclick=`${click}` style="width:16px; height:16px; border:none; background: url('assets/icons/up-chevron-button.svg'); background-size: cover;  background-repeat: no-repeat;") 
           div(id=`${fieldID}` style="display:none;")

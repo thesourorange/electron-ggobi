@@ -29,16 +29,17 @@ $.fn.Draw = function() {
   
   $("#area").html("");
 
-  var selectors = new Map();
+  var categories = new Map();
  
   $("#categories").find("input[name=categorical]:checked").each(function (i, ob) { 
     var field = ob.value;
+    var fieldID = 'field-' + field.replace(/[\s|0-9|\(|\)]/g);
 
-    selectors.set(field, []);
+    categories.set(field, []);
     
-    $("#" + ob.value).find("input[type=checkbox]:checked").each(function (i, ob) { 
+    $("#" + fieldID).find("input[type=checkbox]:checked").each(function (i, ob) { 
 
-      selectors.get(field).push(ob.value);
+      categories.get(field).push(ob.value);
 
     });
 
@@ -46,11 +47,11 @@ $.fn.Draw = function() {
  
   var filteredData = data.filter(function(d, i) {
 
-    var iKeys = selectors.keys();
+    var iKeys = categories.keys();
 
     for (let key of iKeys) {
       
-      if (selectors.get(key).indexOf(d[key]) == -1) {
+      if (categories.get(key).indexOf(d[key]) == -1) {
         return;
       }
 
@@ -346,8 +347,8 @@ $(document).ready(function() {
           $("input[type=checkbox]").on("click", function() {
             selected = [];
 
-            $("#continuous").find("input:checked").each(function (i, ob) { 
-               selected.push(ob.value);
+            $("#continuous").find("input[name=continuous]:checked").each(function (i, ob) { 
+              selected.push(ob.value);
             }); 
 
             $("#categories").find("input[name=categorical]:checked").each(function (i, ob) { 
