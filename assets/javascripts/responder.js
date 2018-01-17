@@ -33,7 +33,7 @@ $.fn.Draw = function() {
  
   $("#categories").find("input[name=categorical]:checked").each(function (i, ob) { 
     var field = ob.value;
-    var fieldID = 'field-' + field.replace(/[\s|0-9|\(|\)]/g);
+    var fieldID = 'field-' + field.replace(/[\s|0-9|\(|\)]/g, '-');
 
     categories.set(field, []);
     
@@ -45,19 +45,50 @@ $.fn.Draw = function() {
 
   });  
  
+  var continuous = new Map();
+ 
+  $("#continuous").find("input[name=continuous]:checked").each(function (i, ob) { 
+    var field = ob.value;
+ 
+    var fieldID = 'field-' + field.replace(/[\s|0-9|\(|\)]/g, '-');
+
+    continuous.set(field, []);
+    
+    $("#" + fieldID).find("input[type=checkbox]:checked").each(function (i, ob) { 
+ 
+      continuous.get(field).push(ob.value);
+
+    });
+
+  });
+
   var filteredData = data.filter(function(d, i) {
 
-    var iKeys = categories.keys();
 
-    for (let key of iKeys) {
-      
-      if (categories.get(key).indexOf(d[key]) == -1) {
-        return;
-      }
-
+    if (!select(categories, d)) {
+      return;
     }
 
+    if (!select(continuous, d)) {
+      return;
+    }
+   
     return d;
+
+    function select(map, d) {
+      var iKeys = map.keys();
+
+      for (let key of iKeys) {
+        
+        if (map.get(key).indexOf(d[key]) == -1) {
+          return false;
+        }
+
+      }
+
+      return true;
+
+    }
 
   });
 
@@ -80,12 +111,12 @@ $.fn.Draw = function() {
               .append("g")
               .attr("transform", "translate(" + m[3] + "," + m[0] + ")");
 
-     x.domain(dimensions = d3.keys(filteredData[0]).filter(function(d) {
-        return (selected.indexOf(d) > -1) && (y[d] = d3.scale.linear()
-          .domain(d3.extent(filteredData, function(p) { return + p[d]; }))
-          .range([h, 0]));
-    }));
-  
+  x.domain(dimensions = d3.keys(filteredData[0]).filter(function(d) {
+      return (selected.indexOf(d) > -1) && (y[d] = d3.scale.linear()
+        .domain(d3.extent(filteredData, function(p) { return + p[d]; }))
+        .range([h, 0]));
+  }));
+
   // Add grey background lines for context.
 
   background = svg.append("g")
@@ -364,7 +395,8 @@ $(document).ready(function() {
 
           });
        
-          $('#uploadDialog').css('display', 'none');    
+          $('#uploadDialog').css('display', 'none'); 
+          $('#area').empty();   
     
         });
    
