@@ -4,7 +4,8 @@ block content
       each field, index in categorical
         input(type="checkbox" name="categorical" value=`${field}` style="height:14px; width:14px;" checked) 
         div(style="display: inline-block; opacity:0.8; left:70px; width: 90%; font-size:16px; vertical-align:top; margin-bottom:10px;")
-          label #{field}
+          - var fieldLabel = field.trim().length == 0 ? '[No Value]' : field
+          label #{fieldLabel}
           span(style="width:16px; height:16px; float: right;")
             - var fieldID = 'field-' + field.replace(/[\s|0-9|\(|\)]/g, '-')
             - var buttonID = fieldID + '-button'
@@ -16,14 +17,16 @@ block content
                 - var filterID = field + '-option'
                 input(type="checkbox" name=`${filterID}` value=`${filter}` style="height:12px; width:12px;" checked) 
                 div(style="display: inline-block; left:130px; width:160px; vertical-align:top; font-size:14px; opacity:0.7")
-                  label #{filter}
+                  - var filterLabel = filter.trim().length == 0 ? '[No Value]' : filter
+                  label #{filterLabel}
       br(style="height:2px;")
     hr
     div#continuous
       each field in continuous
         input(type="checkbox" name="continuous" value=`${field}` style="height:14px; width:14px;") 
         div(style="display: inline-block; opacity:0.8; left:70px; width: 90%; font-size:16px; vertical-align:top; margin-bottom:10px;")
-          label #{field}
+          - var fieldLabel = field.trim().length == 0 ? '[No Value]' : field
+          label #{fieldLabel}
           span(style="width:16px; height:16px; float: right;")
             - var fieldID = 'field-' + field.replace(/[\s|0-9|\(|\)]/g, '-')
             - var buttonID = fieldID + '-button'
@@ -35,6 +38,7 @@ block content
                 - var selectorID = field + '-option'
                 input(type="checkbox" name=`${selectorID}` value=`${selector}` style="height:12px; width:12px;" checked) 
                 div(style="display: inline-block; left:130px; width:160px; vertical-align:top; font-size:14px; opacity:0.7")
-                  label #{selector}
+                  - var selectorLabel = selector.trim().length == 0 ? '[No Value]' : selector
+                  label #{selectorLabel}
         br(style="height:5px;")
 
