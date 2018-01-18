@@ -138,7 +138,9 @@ $.fn.Draw = function() {
     .data(dimensions)
     .enter().append("g")
     .attr("class", "dimension")
-    .attr("transform", function(d) { return "translate(" + x(d) + ")"; })
+    .attr("transform", function(d) { 
+      return "translate(" + x(d) + ")"; 
+    })
     .call(d3.behavior.drag()
       .on("dragstart", function(d) {
         dragging[d] = this.__origin__ = x(d);
@@ -147,9 +149,13 @@ $.fn.Draw = function() {
       .on("drag", function(d) {
         dragging[d] = Math.min(w, Math.max(0, this.__origin__ += d3.event.dx));
         foreground.attr("d", path);
-        dimensions.sort(function(a, b) { return position(a) - position(b); });
+        dimensions.sort(function(a, b) {
+           return position(a) - position(b); 
+        });
         x.domain(dimensions);
-        graph.attr("transform", function(d) { return "translate(" + position(d) + ")"; })
+        graph.attr("transform", function(d) { 
+          return "translate(" + position(d) + ")";
+        })
       })
       .on("dragend", function(d) {
         delete this.__origin__;
@@ -168,7 +174,9 @@ $.fn.Draw = function() {
 
   graph.append("g")
     .attr("class", "axis")
-    .each(function(d) { d3.select(this).call(axis.scale(y[d])); })
+    .each(function(d) { 
+      d3.select(this).call(axis.scale(y[d])); 
+    })
   .append("text")
     .attr("text-anchor", "middle")
     .attr("y", -9)
@@ -178,7 +186,8 @@ $.fn.Draw = function() {
   graph.append("g")
     .attr("class", "brush")
     .each(function(d) { 
-      d3.select(this).call(y[d].brush = d3.svg.brush().y(y[d]).on("brushstart", brushstart).on("brush", brush)); })
+      d3.select(this).call(y[d].brush = d3.svg.brush().y(y[d]).on("brushstart", brushstart).on("brush", brush)); 
+    })
   .selectAll("rect")
     .attr("x", -8)
     .attr("width", 16);
