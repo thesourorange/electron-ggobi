@@ -64,7 +64,6 @@ $.fn.Draw = function() {
 
   var filteredData = data.filter(function(d, i) {
 
-
     if (!select(categories, d)) {
       return;
     }
