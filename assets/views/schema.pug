@@ -33,7 +33,7 @@ block content
             - var click = '$(this).Toggle("#' + fieldID + '","#' + buttonID + '")'
             input(type="button" id=`${buttonID}` onclick=`${click}` style="width:16px; height:16px; border:none; background: url('assets/icons/up-chevron-button.svg'); background-size: cover;  background-repeat: no-repeat;") 
           div(id=`${fieldID}` style="display:none;")
-            each selector in selectors.get(field).sort()
+            each selector in selectors.get(field).sort(function (a,b) { return parseFloat(a) - parseFloat(b); })
               div(style="display: inline-block; left:70px; width: 200px; vertical-align:top; margin-top:5px;")
                 - var selectorID = field + '-option'
                 input(type="checkbox" name=`${selectorID}` value=`${selector}` style="height:12px; width:12px;" checked) 
