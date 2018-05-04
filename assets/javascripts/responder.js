@@ -4,7 +4,11 @@ const d3 = require('d3');
 
 let $ = require('jquery');
 
-var schemaTemplate = pug.compileFile('assets/views/schema.pug');
+var schemaTemplate = null;
+
+$.get('assets/views/schema.template', function(data) {
+  schemaTemplate = pug.compile(data);
+}, 'text');
 
 var data = null;
 
