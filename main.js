@@ -20,7 +20,8 @@ var mainWindow = null
 function createWindow () {
   // Create the browser window.
   mainWindow = new BrowserWindow({width: 1400, height: 800, autoHideMenuBar: true})
-
+  mainWindow.setMenu(null);
+ 
   mainWindow.loadURL(url.format({
     pathname: path.join(__dirname, 'index.pug'),
     protocol: 'file:',
