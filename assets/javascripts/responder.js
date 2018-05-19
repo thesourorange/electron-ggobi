@@ -17,7 +17,7 @@ var selected = [];
 var filters = new Map();
 var selectors = new Map();
 
-$.fn.Toggle = function(id, button) {
+$.fn.Toggle = (id, button) => {
    
   if ($(id).css("display") == 'none') {
     $(id).css("display", "inline-block");
