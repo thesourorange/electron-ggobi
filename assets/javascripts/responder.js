@@ -41,7 +41,7 @@ $.fn.Draw = () => {
 
     categories.set(field, []);
     
-    $("#" + fieldID).find("input[type=checkbox]:checked").each(function (i, ob) { 
+    $("#" + fieldID).find("input[type=checkbox]:checked").each( (i, ob) => { 
 
       categories.get(field).push(ob.value);
 
@@ -242,7 +242,7 @@ $.fn.Draw = () => {
     var actives = dimensions.filter((p) => { 
         return !y[p].brush.empty(); 
       }),
-    extents = actives.map(function(p) { return y[p].brush.extent(); });
+    extents = actives.map((p) => { return y[p].brush.extent(); });
     
     foreground.style("display", (d) => {
       return actives.every((p, i) => {
@@ -268,7 +268,7 @@ $('#load').on('click', (e) => {
 
 });
 
-$('#draw').on('click', function(e) {
+$('#draw').on('click', (e) => {
   
   $(this).Draw();
 
