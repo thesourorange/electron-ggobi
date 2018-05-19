@@ -6,7 +6,7 @@ let $ = require('jquery');
 
 var schemaTemplate = null;
 
-$.get('assets/views/schema.template', function(data) {
+$.get('assets/views/schema.template', (data) => {
   schemaTemplate = pug.compile(data);
 }, 'text');
 
@@ -29,13 +29,13 @@ $.fn.Toggle = function(id, button) {
 
 }
 
-$.fn.Draw = function() {
+$.fn.Draw = () => {
   
   $("#area").html("");
 
   var categories = new Map();
  
-  $("#categories").find("input[name=categorical]:checked").each(function (i, ob) { 
+  $("#categories").find("input[name=categorical]:checked").each( (i, ob) => { 
     var field = ob.value;
     var fieldID = 'field-' + field.replace(/[\s|0-9|\(|\)]/g, '-');
 
@@ -51,14 +51,14 @@ $.fn.Draw = function() {
  
   var continuous = new Map();
  
-  $("#continuous").find("input[name=continuous]:checked").each(function (i, ob) { 
+  $("#continuous").find("input[name=continuous]:checked").each( (i, ob) => { 
     var field = ob.value;
  
     var fieldID = 'field-' + field.replace(/[\s|0-9|\(|\)]/g, '-');
 
     continuous.set(field, []);
     
-    $("#" + fieldID).find("input[type=checkbox]:checked").each(function (i, ob) { 
+    $("#" + fieldID).find("input[type=checkbox]:checked").each( (i, ob) => { 
  
       continuous.get(field).push(ob.value);
 
@@ -66,7 +66,7 @@ $.fn.Draw = function() {
 
   });
 
-  var filteredData = data.filter(function(d, i) {
+  var filteredData = data.filter((d, i) => {
 
     if (!select(categories, d)) {
       return;
@@ -96,8 +96,8 @@ $.fn.Draw = function() {
   });
 
   var m = [30, 10, 30, 10],
-    w = ($("#area").width() < 600 ? 600 : $("#area").width())- m[1] - m[3],
-    h = ($("#area").height() < 500 ? 500 : $("#area").height())  - 10 - m[0] - m[2];
+    w = ($("#area").width() < 600 ? 600 : $("#area").width()) - m[1] - m[3],
+    h = ($("#area").height() < 500 ? 500 : $("#area").height()) - 10 - m[0] - m[2];
 
   var x = d3.scale.ordinal().rangePoints([0, w], 1),
       y = {},
@@ -114,13 +114,13 @@ $.fn.Draw = function() {
               .append("g")
               .attr("transform", "translate(" + m[3] + "," + m[0] + ")");
 
-  x.domain(dimensions = d3.keys(filteredData[0]).filter(function(d) {
+  x.domain(dimensions = d3.keys(filteredData[0]).filter((d) => {
       return (selected.indexOf(d) > -1) && (y[d] = d3.scale.linear()
-        .domain(d3.extent(filteredData, function(p) { return + p[d]; }))
+        .domain(d3.extent(filteredData, (p) => { return + p[d]; }))
         .range([h, 0]));
   }));
 
-  // Add grey background lines for context.
+  // Add grey background lines for context
 
   background = svg.append("g")
       .attr("class", "background")
@@ -141,26 +141,26 @@ $.fn.Draw = function() {
     .data(dimensions)
     .enter().append("g")
     .attr("class", "dimension")
-    .attr("transform", function(d) { 
+    .attr("transform", (d) => { 
       return "translate(" + x(d) + ")"; 
     })
     .call(d3.behavior.drag()
-      .on("dragstart", function(d) {
+      .on("dragstart", (d) => {
         dragging[d] = this.__origin__ = x(d);
         background.attr("visibility", "hidden");
       })
-      .on("drag", function(d) {
+      .on("drag", (d) => {
         dragging[d] = Math.min(w, Math.max(0, this.__origin__ += d3.event.dx));
         foreground.attr("d", path);
-        dimensions.sort(function(a, b) {
+        dimensions.sort((a, b) => {
            return position(a) - position(b); 
         });
         x.domain(dimensions);
-        graph.attr("transform", function(d) { 
+        graph.attr("transform", (d) => { 
           return "translate(" + position(d) + ")";
         })
       })
-      .on("dragend", function(d) {
+      .on("dragend", (d) => {
         delete this.__origin__;
         delete dragging[d];
 
@@ -175,21 +175,27 @@ $.fn.Draw = function() {
             .attr("visibility", null);
       }));
 
+  try {
   graph.append("g")
     .attr("class", "axis")
-    .each(function(d) { 
-      d3.select(this).call(axis.scale(y[d])); 
+    .each(function (column) { 
+      d3.select(this).call(axis.scale(y[column])); 
     })
   .append("text")
     .attr("text-anchor", "middle")
     .attr("y", -9)
     .text(String);
-
+  } catch (e) {
+    alert(e);
+  }
   // Add and store a brush for each axis.
   graph.append("g")
     .attr("class", "brush")
-    .each(function(d) { 
-      d3.select(this).call(y[d].brush = d3.svg.brush().y(y[d]).on("brushstart", brushstart).on("brush", brush)); 
+    .each(function(column) { 
+      d3.select(this).
+        call(y[column].brush = d3.svg.brush().y(y[column]).
+          on("brushstart", brushstart).
+          on("brush", brush)); 
     })
   .selectAll("rect")
     .attr("x", -8)
@@ -217,7 +223,7 @@ $.fn.Draw = function() {
    * @param {*} d 
    */
   function path(d) {
-    return line(dimensions.map(function(p) { return [position(p), y[p](d[p])]; }));
+    return line(dimensions.map((p) => { return [position(p), y[p](d[p])]; }));
   }
 
   /**
@@ -233,13 +239,13 @@ $.fn.Draw = function() {
    *
    */
   function brush() {
-    var actives = dimensions.filter(function(p) { 
+    var actives = dimensions.filter((p) => { 
         return !y[p].brush.empty(); 
       }),
     extents = actives.map(function(p) { return y[p].brush.extent(); });
     
-    foreground.style("display", function(d) {
-      return actives.every(function(p, i) {
+    foreground.style("display", (d) => {
+      return actives.every((p, i) => {
         return extents[i][0] <= d[p] && d[p] <= extents[i][1];
       }) ? null : "none";
     });
@@ -248,13 +254,13 @@ $.fn.Draw = function() {
 
 }
 
-$(window).resize(function(){
+$(window).resize(() => {
 
   $(this).Draw();
 
 });
 
-$('#load').on('click', function(e) {
+$('#load').on('click', (e) => {
     
   $('#uploadDialog').css('display', 'block');
 
@@ -274,7 +280,7 @@ $('#draw').on('click', function(e) {
  * Closing/Hiding the Upload Dialog
  * 
  */
-$('#uploadDialogClose').on('click', function(e) {
+$('#uploadDialogClose').on('click', (e) => {
     
     $('#uploadDialog').css('display', 'none');
 
@@ -282,20 +288,20 @@ $('#uploadDialogClose').on('click', function(e) {
 
 });
 
-$(document).ready(function() {
+$(document).ready(() => {
     var dropzone = $('#droparea');
     
-    dropzone.on('dragover', function() {
+    dropzone.on('dragover', () => {
       dropzone.addClass('hover');
       return false;
     });
   
-    dropzone.on('dragleave', function() {
+    dropzone.on('dragleave', () => {
       dropzone.removeClass('hover');
       return false;
     });
     
-    dropzone.on('drop', function(e) {
+    dropzone.on('drop', (e) => {
       e.stopPropagation();
       e.preventDefault();
       dropzone.removeClass('hover');
@@ -334,16 +340,16 @@ $(document).ready(function() {
       filters.clear();
       selectors.clear();
 
-      Array.prototype.slice.call(files).forEach(function(file) { 
+      Array.prototype.slice.call(files).forEach((file) => { 
         var fileURL = URL.createObjectURL(file);
 
-        d3.csv(fileURL, function(error, rows) {
+        d3.csv(fileURL, (error, rows) => {
         var headers = d3.keys(rows[0]);
         data = rows;
 
-        rows.forEach(function(row) {
+        rows.forEach((row) => {
            
-            headers.forEach(function(column) {
+            headers.forEach((column) => {
 
               if (!isNumber(row[column]) && row[column].match(/\S/)) {  
                 
@@ -387,14 +393,14 @@ $(document).ready(function() {
 
           $('#schema').html(html);
   
-          $("input[type=checkbox]").on("click", function() {
+          $("input[type=checkbox]").on("click", () => {
             selected = [];
 
-            $("#continuous").find("input[name=continuous]:checked").each(function (i, ob) { 
+            $("#continuous").find("input[name=continuous]:checked").each((i, ob) => { 
               selected.push(ob.value);
             }); 
 
-            $("#categories").find("input[name=categorical]:checked").each(function (i, ob) { 
+            $("#categories").find("input[name=categorical]:checked").each((i, ob) => { 
             });  
 
             if (selected.length > 1) {
