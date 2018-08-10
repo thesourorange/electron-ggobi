@@ -29,6 +29,7 @@
     "path": "~0.12.7",
     "electron-pug": "1.5.1",
     "electron-packager": "^12.0.2",
-    "electron-winstaller": "^2.6.4" 
+    "electron-winstaller": "^2.6.4",
+    "electron-disable-file-drop": "^1.0.2"
   }
 }

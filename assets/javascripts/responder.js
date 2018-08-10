@@ -4,6 +4,8 @@ const d3 = require('d3');
 
 let $ = require('jquery');
 
+require('electron-disable-file-drop');
+
 var schemaTemplate = null;
 
 $.get('assets/views/schema.template', (data) => {
