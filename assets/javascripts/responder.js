@@ -408,10 +408,27 @@ $(document).ready(() => {
             if (selected.length > 1) {
               $('#drawButton').css('color', 'white');
               $('#draw').css('color', 'white');
+              $('#drawButton').css('opacity', '0.7');
+
+              $('#drawButton').hover(   
+                function() { 
+                  $(this).css('opacity', '1.0');
+                }, function(){
+                  $(this).css('opacity', '0.7');
+                }
+              );
             } else {
               $('#drawButton').css('color', 'grey');
               $('#draw').css('color', 'grey');
-            }
+              $('#drawButton').css('opacity', '0.5');
+
+              $('#drawButton').hover(   
+                function() { 
+                  $(this).css('opacity', '0.5');
+                }, function(){
+                  $(this).css('opacity', '0.5');
+                }
+              );           }
 
           });
        

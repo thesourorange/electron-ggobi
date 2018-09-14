@@ -29,3 +29,15 @@ h1 {
 .hidden {
   display: none;
 }
+
+#loadButton {
+
+	opacity: 0.7;
+
+}
+
+#loadButton:hover {
+
+	opacity: 1.0;
+
+}
